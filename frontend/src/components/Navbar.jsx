@@ -23,8 +23,15 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-ink/10">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center gap-6">
-        <Link to="/" className="font-display font-800 text-xl text-teal shrink-0">
-          Nova
+        <Link to="/" className="flex items-center gap-1.5 shrink-0 group">
+          <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#3E2723] group-hover:opacity-90 transition-opacity">
+            <svg width="15" height="15" viewBox="0 0 72 72" fill="none">
+              <path d="M50 22 C36 26 30 40 46 50 C34 46 24 34 32 20 C24 28 20 42 30 52 C42 58 56 46 50 22 Z" fill="#FFE8D6"/>
+            </svg>
+          </span>
+          <span className="font-display font-800 text-xl text-teal tracking-tight">
+            Nova
+          </span>
         </Link>
 
         <form onSubmit={handleSearch} className="flex-1 hidden md:flex">
