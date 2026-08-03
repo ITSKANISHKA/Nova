@@ -29,7 +29,7 @@ const Navbar = () => {
               <path d="M50 22 C36 26 30 40 46 50 C34 46 24 34 32 20 C24 28 20 42 30 52 C42 58 56 46 50 22 Z" fill="#FFE8D6"/>
             </svg>
           </span>
-          <span className="font-display font-800 text-xl text-teal tracking-tight">
+          <span className="font-mono font-bold text-xl text-teal tracking-wider uppercase">
             Nova
           </span>
         </Link>
