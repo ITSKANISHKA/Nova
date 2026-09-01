@@ -1,6 +1,7 @@
 # Nova — Full-Stack E-Commerce Platform
 
 A full-stack e-commerce platform built with **React, Node.js, Express.js, and MongoDB**, featuring JWT authentication with role-based access control (Buyer/Seller/Admin), Razorpay payments, and 10+ modules.
+Built a multi-user e-commerce platform with an architecture designed to support 1,000+ users.
 
 ## Modules
 
