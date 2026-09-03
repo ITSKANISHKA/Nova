@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 
 import Home from './pages/Home';
@@ -30,7 +31,7 @@ function App() {
       <AuthProvider>
         <CartProvider>
           <Toaster position="top-center" toastOptions={{ duration: 2500 }} />
-          <div className="min-h-screen flex flex-col">
+          <div className="min-h-screen flex flex-col bg-slate-50/50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
             <Navbar />
             <main className="flex-1">
               <Routes>
@@ -82,12 +83,13 @@ function App() {
                 } />
 
                 <Route path="*" element={
-                  <div className="min-h-[60vh] flex items-center justify-center text-ink/40">
+                  <div className="min-h-[60vh] flex items-center justify-center text-slate-400">
                     Page not found
                   </div>
                 } />
               </Routes>
             </main>
+            <Footer />
           </div>
         </CartProvider>
       </AuthProvider>

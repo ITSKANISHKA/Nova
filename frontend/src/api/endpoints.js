@@ -11,6 +11,7 @@ export const authApi = {
 export const productApi = {
   getAll: (params) => api.get('/products', { params }),
   getById: (id) => api.get(`/products/${id}`),
+  getSuggestions: (q) => api.get('/products/search-suggestions', { params: { q } }),
   create: (data) => api.post('/products', data),
   update: (id, data) => api.put(`/products/${id}`, data),
   remove: (id) => api.delete(`/products/${id}`),
@@ -30,7 +31,15 @@ export const orderApi = {
   getMy: () => api.get('/orders/my'),
   getById: (id) => api.get(`/orders/${id}`),
   getSellerOrders: () => api.get('/orders/seller/mine'),
-  updateStatus: (id, status) => api.put(`/orders/${id}/status`, { status }),
+  updateStatus: (id, status, note) => api.put(`/orders/${id}/status`, { status, note }),
+};
+
+export const couponApi = {
+  validate: (code, cartTotal) => api.post('/coupons/validate', { code, cartTotal }),
+  getAll: () => api.get('/coupons'),
+  create: (data) => api.post('/coupons', data),
+  remove: (id) => api.delete(`/coupons/${id}`),
+  toggleStatus: (id) => api.patch(`/coupons/${id}/toggle`),
 };
 
 export const reviewApi = {

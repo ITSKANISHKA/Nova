@@ -1,6 +1,26 @@
 const asyncHandler = require('express-async-handler');
 const Product = require('../models/Product');
 
+// @desc    Get instant search suggestions
+// @route   GET /api/products/search-suggestions
+// @access  Public
+const getSearchSuggestions = asyncHandler(async (req, res) => {
+  const { q } = req.query;
+  if (!q || q.trim().length < 2) {
+    return res.json({ success: true, suggestions: [] });
+  }
+
+  const regex = new RegExp(q.trim(), 'i');
+  const products = await Product.find({
+    isActive: true,
+    $or: [{ name: regex }, { category: regex }, { brand: regex }],
+  })
+    .select('name price discountPrice images category brand')
+    .limit(6);
+
+  res.json({ success: true, suggestions: products });
+});
+
 // @desc    Get all products with search, filter, pagination
 // @route   GET /api/products
 // @access  Public
@@ -10,6 +30,7 @@ const getProducts = asyncHandler(async (req, res) => {
     category,
     minPrice,
     maxPrice,
+    minRating,
     sort,
     page = 1,
     limit = 12,
@@ -18,7 +39,8 @@ const getProducts = asyncHandler(async (req, res) => {
   const query = { isActive: true };
 
   if (keyword) {
-    query.$text = { $search: keyword };
+    const regex = new RegExp(keyword.trim(), 'i');
+    query.$or = [{ name: regex }, { description: regex }, { brand: regex }, { category: regex }];
   }
   if (category) {
     query.category = category;
@@ -27,6 +49,9 @@ const getProducts = asyncHandler(async (req, res) => {
     query.price = {};
     if (minPrice) query.price.$gte = Number(minPrice);
     if (maxPrice) query.price.$lte = Number(maxPrice);
+  }
+  if (minRating) {
+    query.ratingsAverage = { $gte: Number(minRating) };
   }
 
   let sortOption = { createdAt: -1 };
@@ -77,7 +102,7 @@ const getProductById = asyncHandler(async (req, res) => {
 // @route   POST /api/products
 // @access  Private (seller/admin)
 const createProduct = asyncHandler(async (req, res) => {
-  const { name, description, price, category, stock, brand, images } =
+  const { name, description, price, discountPrice, category, stock, brand, images } =
     req.body;
 
   if (!name || !description || !price || !category || stock === undefined) {
@@ -90,6 +115,7 @@ const createProduct = asyncHandler(async (req, res) => {
     name,
     description,
     price,
+    discountPrice: discountPrice || null,
     category,
     stock,
     brand: brand || '',
@@ -110,7 +136,6 @@ const updateProduct = asyncHandler(async (req, res) => {
     throw new Error('Product not found');
   }
 
-  // Ownership check - sellers can only edit their own products
   if (
     req.user.role !== 'admin' &&
     product.seller.toString() !== req.user._id.toString()
@@ -174,6 +199,7 @@ const getMyProducts = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+  getSearchSuggestions,
   getProducts,
   getProductById,
   createProduct,

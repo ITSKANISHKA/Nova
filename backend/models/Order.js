@@ -20,6 +20,25 @@ const orderItemSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const statusHistorySchema = new mongoose.Schema(
+  {
+    status: {
+      type: String,
+      enum: ['placed', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'],
+      required: true,
+    },
+    timestamp: {
+      type: Date,
+      default: Date.now,
+    },
+    note: {
+      type: String,
+      default: '',
+    },
+  },
+  { _id: false }
+);
+
 const orderSchema = new mongoose.Schema(
   {
     buyer: {
@@ -46,6 +65,10 @@ const orderSchema = new mongoose.Schema(
       },
     },
     itemsTotal: { type: Number, required: true },
+    couponDiscount: {
+      code: { type: String, default: '' },
+      amount: { type: Number, default: 0 },
+    },
     shippingFee: { type: Number, default: 0 },
     totalAmount: { type: Number, required: true },
     orderStatus: {
@@ -53,12 +76,14 @@ const orderSchema = new mongoose.Schema(
       enum: [
         'placed',
         'confirmed',
+        'processing',
         'shipped',
         'delivered',
         'cancelled',
       ],
       default: 'placed',
     },
+    statusHistory: [statusHistorySchema],
     deliveredAt: { type: Date },
   },
   { timestamps: true }

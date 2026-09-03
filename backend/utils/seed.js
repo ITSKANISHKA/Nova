@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const connectDB = require('../config/db');
 const User = require('../models/User');
 const Product = require('../models/Product');
+const Coupon = require('../models/Coupon');
 
-// Deterministic demo images (picsum.photos - free, no attribution needed, great for testing)
 const img = (seed) => `https://picsum.photos/seed/${seed}/600/600`;
 
 const SAMPLE_PRODUCTS = [
@@ -12,7 +12,7 @@ const SAMPLE_PRODUCTS = [
     name: 'Wireless Bluetooth Headphones',
     description: 'Over-ear headphones with active noise cancellation and 30hr battery life.',
     price: 2499, discountPrice: 1999, category: 'Electronics', brand: 'SoundWave', stock: 50,
-    images: [img('headphones1')],
+    images: [img('headphones1'), img('headphones2')],
   },
   {
     name: 'Smartwatch Fitness Tracker',
@@ -100,6 +100,32 @@ const SAMPLE_PRODUCTS = [
   },
 ];
 
+const SAMPLE_COUPONS = [
+  {
+    code: 'NOVA10',
+    discountPercent: 10,
+    minPurchase: 499,
+    maxDiscount: 500,
+    expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
+    isActive: true,
+  },
+  {
+    code: 'WELCOME20',
+    discountPercent: 20,
+    minPurchase: 999,
+    maxDiscount: 1000,
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    isActive: true,
+  },
+  {
+    code: 'SAVE500',
+    discountAmount: 500,
+    minPurchase: 2000,
+    expiresAt: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000),
+    isActive: true,
+  },
+];
+
 const run = async () => {
   await connectDB();
 
@@ -125,12 +151,17 @@ const run = async () => {
     console.log('Seller created: seller@ecommerce.com / Seller@123');
   }
 
-  // Replace any previously seeded demo products with the fresh, fuller catalog
   await Product.deleteMany({ seller: seller._id });
   await Product.insertMany(
     SAMPLE_PRODUCTS.map((p) => ({ ...p, seller: seller._id }))
   );
-  console.log(`${SAMPLE_PRODUCTS.length} sample products seeded (with demo images)`);
+  console.log(`${SAMPLE_PRODUCTS.length} sample products seeded`);
+
+  await Coupon.deleteMany({});
+  await Coupon.insertMany(
+    SAMPLE_COUPONS.map((c) => ({ ...c, createdBy: admin._id }))
+  );
+  console.log(`${SAMPLE_COUPONS.length} sample coupons seeded`);
 
   console.log('Seeding complete');
   process.exit(0);

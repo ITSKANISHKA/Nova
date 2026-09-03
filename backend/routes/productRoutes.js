@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {
+  getSearchSuggestions,
   getProducts,
   getProductById,
   createProduct,
@@ -10,6 +11,7 @@ const {
 } = require('../controllers/productController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
+router.get('/search-suggestions', getSearchSuggestions);
 router.get('/', getProducts);
 router.get('/seller/mine', protect, authorize('seller', 'admin'), getMyProducts);
 router.get('/:id', getProductById);
